@@ -287,7 +287,8 @@ public struct CodeScannerView: UIViewControllerRepresentable {
         
         /** Touch the screen for autofocus */
         public override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-            guard touches.first?.view == view,
+            // Disable touch for autofocus for now
+            /*guard touches.first?.view == view,
                   let touchPoint = touches.first,
                   let device = videoCaptureDevice
             else { return }
@@ -309,7 +310,7 @@ public struct CodeScannerView: UIViewControllerRepresentable {
             device.focusMode = .continuousAutoFocus
             device.exposurePointOfInterest = focusPoint
             device.exposureMode = AVCaptureDevice.ExposureMode.continuousAutoExposure
-            device.unlockForConfiguration()
+            device.unlockForConfiguration()*/
         }
     }
     #endif
