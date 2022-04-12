@@ -92,7 +92,7 @@ public struct CodeScannerView: UIViewControllerRepresentable {
             label.translatesAutoresizingMaskIntoConstraints = false
             label.numberOfLines = 0
 
-            label.text = "You're running in the simulator, which means the camera isn't available. Tap anywhere to send back some simulated data."
+            label.text = "You're running in the simulator. Tap anywhere to simulate data."
             label.textAlignment = .center
             let button = UIButton()
             button.translatesAutoresizingMaskIntoConstraints = false
