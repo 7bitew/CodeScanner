@@ -161,8 +161,9 @@ public struct CodeScannerView: UIViewControllerRepresentable {
         var captureSession: AVCaptureSession!
         var previewLayer: AVCaptureVideoPreviewLayer!
         var delegate: ScannerCoordinator?
+        let videoCaptureDevice : AVCaptureDevice?
         //let videoCaptureDevice = AVCaptureDevice.default(for: .video)
-        let videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        //let videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
 
         private let showViewfinder: Bool
 
@@ -176,13 +177,16 @@ public struct CodeScannerView: UIViewControllerRepresentable {
             return imageView
         }()
 
-        public init(showViewfinder: Bool) {
+        public init(showViewfinder: Bool, position: AVCaptureDevice.Position = .front) {
+            self.videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)
             self.showViewfinder = showViewfinder
             super.init(nibName: nil, bundle: nil)
         }
 
         public required init?(coder: NSCoder) {
+            self.videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             self.showViewfinder = false
+            
             super.init(coder: coder)
         }
 
@@ -320,15 +324,17 @@ public struct CodeScannerView: UIViewControllerRepresentable {
     public let scanInterval: Double
     public let showViewfinder: Bool
     public var simulatedData = ""
+    public var position: AVCaptureDevice.Position
     public var completion: (Result<String, ScanError>) -> Void
 
-    public init(codeTypes: [AVMetadataObject.ObjectType], scanMode: ScanMode = .once, showViewfinder: Bool = false, scanInterval: Double = 2.0, simulatedData: String = "", completion: @escaping (Result<String, ScanError>) -> Void) {
+    public init(codeTypes: [AVMetadataObject.ObjectType], scanMode: ScanMode = .once, showViewfinder: Bool = false, scanInterval: Double = 2.0, simulatedData: String = "", position: AVCaptureDevice.Position = .front, completion: @escaping (Result<String, ScanError>) -> Void) {
         self.codeTypes = codeTypes
         self.scanMode = scanMode
         self.showViewfinder = showViewfinder
         self.scanInterval = scanInterval
         self.simulatedData = simulatedData
         self.completion = completion
+        self.position = position
     }
 
     public func makeCoordinator() -> ScannerCoordinator {
@@ -336,7 +342,7 @@ public struct CodeScannerView: UIViewControllerRepresentable {
     }
 
     public func makeUIViewController(context: Context) -> ScannerViewController {
-        let viewController = ScannerViewController(showViewfinder: showViewfinder)
+        let viewController = ScannerViewController(showViewfinder: showViewfinder, position: position)
         viewController.delegate = context.coordinator
         return viewController
     }
