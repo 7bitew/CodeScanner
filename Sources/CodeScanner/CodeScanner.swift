@@ -75,9 +75,11 @@ public struct CodeScannerView: UIViewControllerRepresentable {
     public class ScannerViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
         var delegate: ScannerCoordinator?
         private let showViewfinder: Bool
+        private let position: AVCaptureDevice.Position?
 
-        public init(showViewfinder: Bool = false) {
+        public init(showViewfinder: Bool = false, position: AVCaptureDevice.Position = .front) {
             self.showViewfinder = showViewfinder
+            self.position = position
             super.init(nibName: nil, bundle: nil)
         }
 
