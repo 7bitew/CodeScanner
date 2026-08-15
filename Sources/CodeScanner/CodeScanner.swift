@@ -164,10 +164,12 @@ public struct CodeScannerView: UIViewControllerRepresentable {
         var previewLayer: AVCaptureVideoPreviewLayer!
         var delegate: ScannerCoordinator?
         let videoCaptureDevice : AVCaptureDevice?
+        
         //let videoCaptureDevice = AVCaptureDevice.default(for: .video)
         //let videoCaptureDevice = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
 
         private let showViewfinder: Bool
+        private let videoSessionQueue = DispatchQueue(label: "com.7bitsys.ovep.concierge.kiosk.videoSessionQueue", qos: .userInitiated)
 
         private lazy var viewFinder: UIImageView? = {
             guard let image = UIImage(named: "viewfinder", in: .module, with: nil) else {
@@ -257,7 +259,24 @@ public struct CodeScannerView: UIViewControllerRepresentable {
             addviewfinder()
 
             if (captureSession?.isRunning == false) {
-                captureSession.startRunning()
+                //captureSession.startRunning()
+                // 2. Perform configuration and start running on the background queue
+                videoSessionQueue.async { [weak self] in
+                        guard let self = self else { return }
+                        
+                        // (Optional) Add your inputs/outputs configuration here if not already done
+                        
+                        // 3. Start the session on the background thread
+                        //if !self.captureSession.isRunning {
+                        self.captureSession.startRunning()
+                        //}
+                        
+                        // 4. Always jump back to the main thread for UI updates
+                        DispatchQueue.main.async {
+                            print("Camera session started, UI is perfectly smooth!")
+                            // Update preview layer visibility or spin loaders here
+                        }
+                    }
             }
         }
 
